@@ -16,11 +16,17 @@ def index():
             "monthly_contributions": float(request.form['monthly_contributions'])
         }
         gemini_portfolio, openai_portfolio, gemini_fv, openai_fv = main.recommend_investment(visa_data)
-        # Capture Gemini justification (assuming it's the recommendation text)
-        gemini_justification = main.get_ai_recommendation(visa_data)  # This returns the full recommendation text
-        # Capture Open AI justification (assuming it's from validation)
-        openai_validation = main.validate_with_openai(*[visa_data.get(k, []) for k in ['expected_costs', 'investable_cash', 'monthly_contributions', 'expiration_date']])
-        openai_justification = f"Validation: {openai_validation['reason']}"  # Use reason as justification
+        # Capture Gemini justification
+        gemini_justification = main.get_ai_recommendation(visa_data)
+        # Capture Open AI justification with correct arguments
+        openai_validation = main.validate_with_openai(
+            [], [], 1.0,  # Default tickers, allocations, risk_multiplier (to be updated by validation)
+            visa_data["expected_costs"],
+            visa_data["investable_cash"],
+            visa_data["monthly_contributions"],
+            visa_data["expiration_date"]
+        )
+        openai_justification = f"Validation: {openai_validation['reason']}"
         return render_template('index.html', gemini_portfolio=gemini_portfolio, openai_portfolio=openai_portfolio, gemini_fv=gemini_fv, openai_fv=openai_fv, gemini_justification=gemini_justification, openai_justification=openai_justification)
     return render_template('index.html')
 
