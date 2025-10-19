@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <img src="https://www.getaspira.com/wp-content/uploads/2023/06/Aspira-Logo-White-1.png" alt="Aspira Logo" class="logo">
+    <img src="https://drive.google.com/file/d/1fEss8SngNXnqrdFgne0ODhkLYSSVXsxI/view?usp=sharing" alt="Aspira Logo" class="logo">
     <h1>Aspira Visa Hedge Investor</h1>
     <form method="post">
         <label>Current Visa: <input type="text" name="current_visa" value="H-1B" required></label>
@@ -55,7 +55,7 @@
         <script>
             // Pass Jinja2 variables to JavaScript with defaults
             const expDate = new Date('{{ expiration_date|default("2027-10-11") }}');
-            const today = new Date('{{ today|default(datetime.now().strftime("%Y-%m-%d")) }}');
+            const today = new Date('{{ today }}');
             const months = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24 * 30));
             const labels = Array.from({length: months + 1}, (_, i) => i);
 
@@ -120,4 +120,3 @@
         </script>
     {% endif %}
 </body>
-</html>
