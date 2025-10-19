@@ -5,7 +5,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Roboto', sans-serif; background-color: #FDFAF6; color: #8E7CB5; margin: 0; padding: 20px; }
-        .logo { position: absolute; top: 10px; left: 10px; width: 150px; }
         h1 { color: #8E7CB5; text-align: center; margin-bottom: 20px; }
         form { background-color: #FFFFFF; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
         label { display: block; margin-bottom: 10px; }
@@ -16,11 +15,9 @@
         h2 { color: #8E7CB5; margin-top: 20px; }
         p { margin: 5px 0; color: #8E7CB5; }
         pre { background-color: #FDFAF6; padding: 10px; border-radius: 4px; overflow-x: auto; white-space: pre-wrap; color: #8E7CB5; }
-        canvas { max-width: 600px; margin: 20px auto; display: block; }
     </style>
 </head>
 <body>
-    <img src="https://drive.google.com/file/d/1fEss8SngNXnqrdFgne0ODhkLYSSVXsxI/view?usp=sharing" alt="Aspira Logo" class="logo">
     <h1>Aspira Visa Hedge Investor</h1>
     <form method="post">
         <label>Current Visa: <input type="text" name="current_visa" value="H-1B" required></label>
@@ -50,73 +47,6 @@
             <h3>Justification</h3>
             <pre>{{ openai_justification|safe }}</pre>
         </div>
-        <canvas id="growthChart"></canvas>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            // Pass Jinja2 variables to JavaScript with defaults
-            const expDate = new Date('{{ expiration_date|default("2027-10-11") }}');
-            const today = new Date('{{ today }}');
-            const months = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24 * 30));
-            const labels = Array.from({length: months + 1}, (_, i) => i);
-
-            const initialValue = {{ investable_cash|tojson|safe }};
-            const monthlyContribution = {{ monthly_contributions|tojson|safe }};
-            const expectedCost = {{ expected_costs|tojson|safe }};
-            const geminiFv = {{ gemini_fv|tojson|safe }};
-            const openaiFv = {{ openai_fv|tojson|safe }};
-
-            // Calculate monthly returns based on projected future value
-            const geminiMonthlyReturn = (geminiFv - initialValue) / (monthlyContribution * months + initialValue) / months || 0.005; // Fallback 0.5% monthly
-            const openaiMonthlyReturn = (openaiFv - initialValue) / (monthlyContribution * months + initialValue) / months || 0.006; // Fallback 0.6% monthly
-            const spyMonthlyReturn = 0.0075; // Approx 9% annual for SPY
-
-            // Calculate growth data points
-            let geminiData = [initialValue];
-            let openaiData = [initialValue];
-            let spyData = [initialValue];
-
-            for (let i = 1; i <= months; i++) {
-                geminiData.push(geminiData[i-1] * (1 + geminiMonthlyReturn) + monthlyContribution);
-                openaiData.push(openaiData[i-1] * (1 + openaiMonthlyReturn) + monthlyContribution);
-                spyData.push(spyData[i-1] * (1 + spyMonthlyReturn) + monthlyContribution);
-            }
-
-            new Chart(document.getElementById('growthChart').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Gemini Strategy',
-                        data: geminiData,
-                        borderColor: '#8E7CB5',
-                        fill: false
-                    }, {
-                        label: 'Open AI Strategy',
-                        data: openaiData,
-                        borderColor: '#8E7CB5',
-                        fill: false,
-                        borderDash: [5, 5]
-                    }, {
-                        label: 'SPY Benchmark',
-                        data: spyData,
-                        borderColor: '#A9A9A9',
-                        fill: false
-                    }, {
-                        label: 'Expected Cost',
-                        data: Array(labels.length).fill(expectedCost),
-                        borderColor: '#FF4500',
-                        borderDash: [5, 5],
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true, title: { display: true, text: 'Portfolio Value ($)', color: '#8E7CB5' } },
-                        x: { title: { display: true, text: 'Months', color: '#8E7CB5' } }
-                    },
-                    plugins: { legend: { labels: { color: '#8E7CB5' } } }
-                }
-            });
-        </script>
     {% endif %}
 </body>
+</html>
