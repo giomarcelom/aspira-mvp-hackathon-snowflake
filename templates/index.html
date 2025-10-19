@@ -30,7 +30,7 @@
     </form>
     {% if gemini_portfolio %}
         <div class="strategy-section">
-            <h2>Gemini Strategy</h2>
+            <h2>Investment Recommendation #1</h2>
             <p><strong>Projected Value:</strong> ${{ gemini_fv }}</p>
             {% for ticker, price, target, shares in gemini_portfolio %}
                 <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
@@ -39,7 +39,7 @@
             <pre>{{ gemini_justification|safe }}</pre>
         </div>
         <div class="strategy-section">
-            <h2>Open AI Strategy</h2>
+            <h2>Investment Recommendation #2</h2>
             <p><strong>Projected Value:</strong> ${{ openai_fv }}</p>
             {% for ticker, price, target, shares in openai_portfolio %}
                 <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
