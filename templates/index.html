@@ -1,28 +1,53 @@
 <!DOCTYPE html>
 <html>
-<head><title>Aspira MVP</title></head>
+<head>
+    <title>Aspira Visa Hedge Investor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #fff; color: #333; margin: 0; padding: 20px; }
+        h1 { color: #007bff; text-align: center; }
+        form { background-color: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 500px; margin: 0 auto; }
+        label { display: block; margin-bottom: 10px; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background-color: #007bff; color: #fff; padding: 10px; border: none; border-radius: 4px; cursor: pointer; width: 100%; }
+        button:hover { background-color: #0056b3; }
+        h2 { color: #007bff; margin-top: 20px; }
+        .strategy-section { background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        p { margin: 5px 0; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        canvas { max-width: 600px; margin: 20px auto; display: block; }
+    </style>
+</head>
 <body>
-    <h1>Aspira Visa Investment Planner</h1>
+    <h1>Aspira Visa Hedge Investor</h1>
     <form method="post">
-        <label>Current Visa: <input type="text" name="current_visa" required></label><br>
-        <label>Expiration Date (YYYY-MM-DD): <input type="text" name="expiration_date" required></label><br>
-        <label>Pending Applications (comma-separated): <input type="text" name="pending_applications" required></label><br>
-        <label>Expected Costs ($): <input type="number" name="expected_costs" step="0.01" required></label><br>
-        <label>Investable Cash ($): <input type="number" name="investable_cash" step="0.01" required></label><br>
-        <label>Monthly Contributions ($): <input type="number" name="monthly_contributions" step="0.01" required></label><br>
+        <label>Current Visa: <input type="text" name="current_visa" value="H-1B" required></label>
+        <label>Expiration Date (YYYY-MM-DD): <input type="text" name="expiration_date" value="2027-10-11" required></label>
+        <label>Pending Applications (comma-separated): <input type="text" name="pending_applications" value="EB-2" required></label>
+        <label>Expected Costs ($): <input type="number" name="expected_costs" value="24500" step="0.01" required></label>
+        <label>Investable Cash ($): <input type="number" name="investable_cash" value="12000" step="0.01" required></label>
+        <label>Monthly Contributions ($): <input type="number" name="monthly_contributions" value="400" step="0.01" required></label>
         <button type="submit">Submit</button>
     </form>
     {% if gemini_portfolio %}
-        <h2>Gemini Strategy</h2>
-        <p>Projected Value: ${{ gemini_fv }}</p>
-        {% for ticker, price, target, shares in gemini_portfolio %}
-            <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
-        {% endfor %}
-        <h2>Open AI Strategy</h2>
-        <p>Projected Value: ${{ openai_fv }}</p>
-        {% for ticker, price, target, shares in openai_portfolio %}
-            <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
-        {% endfor %}
+        <div class="strategy-section">
+            <h2>Gemini Strategy</h2>
+            <p><strong>Projected Value:</strong> ${{ gemini_fv }}</p>
+            {% for ticker, price, target, shares in gemini_portfolio %}
+                <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
+            {% endfor %}
+            <h3>Justification</h3>
+            <pre>{{ gemini_justification|safe }}</pre>
+        </div>
+        <div class="strategy-section">
+            <h2>Open AI Strategy</h2>
+            <p><strong>Projected Value:</strong> ${{ openai_fv }}</p>
+            {% for ticker, price, target, shares in openai_portfolio %}
+                <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
+            {% endfor %}
+            <h3>Justification</h3>
+            <pre>{{ openai_justification|safe }}</pre>
+        </div>
         <canvas id="growthChart"></canvas>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
@@ -34,17 +59,17 @@
                     datasets: [{
                         label: 'Gemini Strategy',
                         data: [12000, 18000, gemini_fv],
-                        borderColor: 'blue',
+                        borderColor: '#007bff',
                         fill: false
                     }, {
                         label: 'Open AI Strategy',
                         data: [12000, 19000, openai_fv],
-                        borderColor: 'red',
+                        borderColor: '#ff0000',
                         fill: false
                     }, {
                         label: 'SPY Benchmark',
-                        data: [12000, 16000, 18000], // Example SPY growth
-                        borderColor: 'green',
+                        data: [12000, 16000, 18000],
+                        borderColor: '#28a745',
                         fill: false
                     }]
                 },
