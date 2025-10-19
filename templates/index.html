@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><title>Aspira MVP</title></head>
+<body>
+    <h1>Visa-hedged Investment Strategy 1</h1>
+    <p>Projected Value: ${{ gemini_fv }}</p>
+    {% for ticker, price, target, shares in gemini_portfolio %}
+        <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
+    {% endfor %}
+    <h1>Visa-hedged Strategy 2</h1>
+    <p>Projected Value: ${{ openai_fv }}</p>
+    {% for ticker, price, target, shares in openai_portfolio %}
+        <p>{{ ticker }}: Target ${{ target }}, Shares {{ shares }}</p>
+    {% endfor %}
+    <canvas id="growthChart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0', '12', '24'],
+                datasets: [{
+                    label: 'Gemini Strategy',
+                    data: [12000, 18000, gemini_fv],
+                    borderColor: 'blue',
+                    fill: false
+                }, {
+                    label: 'Open AI Strategy',
+                    data: [12000, 19000, openai_fv],
+                    borderColor: 'red',
+                    fill: false
+                }, {
+                    label: 'SPY Benchmark',
+                    data: [12000, 16000, 18000], // Based on the finance card above
+                    borderColor: 'green',
+                    fill: false
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+    </script>
+</body>
+</html>

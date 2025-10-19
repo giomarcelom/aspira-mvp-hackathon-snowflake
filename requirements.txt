@@ -1,0 +1,6 @@
+snowflake-connector-python
+yfinance
+google-generativeai
+openai
+flask
+python-dotenv
