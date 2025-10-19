@@ -53,18 +53,17 @@
         <canvas id="growthChart"></canvas>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            // Calculate months based on expiration date
+            // Pass Jinja2 variables to JavaScript with defaults
             const expDate = new Date('{{ expiration_date|default("2027-10-11") }}');
             const today = new Date('{{ today|default(datetime.now().strftime("%Y-%m-%d")) }}');
             const months = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24 * 30));
             const labels = Array.from({length: months + 1}, (_, i) => i);
 
-            // Pass form data or defaults to JavaScript
-            const initialValue = {{ investable_cash|default(12000) }};
-            const monthlyContribution = {{ monthly_contributions|default(400) }};
-            const expectedCost = {{ expected_costs|default(24500) }};
-            const geminiFv = {{ gemini_fv|default(23660.68) }}; // Default from previous output
-            const openaiFv = {{ openai_fv|default(24336.04) }}; // Default from previous output
+            const initialValue = {{ investable_cash|tojson|safe }};
+            const monthlyContribution = {{ monthly_contributions|tojson|safe }};
+            const expectedCost = {{ expected_costs|tojson|safe }};
+            const geminiFv = {{ gemini_fv|tojson|safe }};
+            const openaiFv = {{ openai_fv|tojson|safe }};
 
             // Calculate monthly returns based on projected future value
             const geminiMonthlyReturn = (geminiFv - initialValue) / (monthlyContribution * months + initialValue) / months || 0.005; // Fallback 0.5% monthly
