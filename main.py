@@ -39,9 +39,9 @@ def connect_to_snowflake():
         schema=os.getenv("SNOWFLAKE_SCHEMA")
     )
 
-# Visa input function
+# Visa input function (to be called by app.py, not at startup)
 def get_visa_input():
-    visa_data = {
+    return {
         "current_visa": input("Enter current visa (e.g., H-1B): "),
         "expiration_date": input("Enter expiration date (YYYY-MM-DD): "),
         "pending_applications": input("Enter pending applications (comma-separated, e.g., EB-2): ").split(","),
@@ -49,7 +49,6 @@ def get_visa_input():
         "investable_cash": float(input("Enter current investable cash ($): ")),
         "monthly_contributions": float(input("Enter monthly investment contributions ($): "))
     }
-    return visa_data
 
 # Store in Snowflake
 def store_in_snowflake(visa_data, conn):
@@ -156,8 +155,8 @@ def recommend_investment(visa_data):
     print("Gemini Strategy Recommendation:", gemini_recommendation)
     gemini_tickers, gemini_risk_multiplier, gemini_allocations = parse_recommendation(gemini_recommendation)
     if not gemini_tickers or not gemini_allocations:
-        gemini_tickers = ["SPY", "BND", "VNQ", "ICLN"]  # Default fallback tickers to match 40/50/10 structure
-        gemini_allocations = [0.4, 0.5, 0.1, 0.0]  # Adjusted to reflect Visa Stability (40%), EB-2 Growth (50%), Future Mobility (10%)
+        gemini_tickers = ["SPY", "BND", "VNQ", "ICLN"]  # Default fallback tickers
+        gemini_allocations = [0.4, 0.5, 0.1, 0.0]  # Adjusted to reflect structure
         gemini_risk_multiplier = 1.0
 
     # Open AI Strategy (if validation provides new suggestion)
@@ -228,8 +227,4 @@ def recommend_investment(visa_data):
 
     return gemini_portfolio, openai_portfolio, gemini_fv, openai_fv
 
-# Get visa data
-visa_data = get_visa_input()
-
-# Call recommend_investment
-gemini_portfolio, openai_portfolio, gemini_fv, openai_fv = recommend_investment(visa_data)
+# No direct call to get_visa_input() here; handled by app.py
