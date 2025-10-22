@@ -74,7 +74,7 @@ def get_price_from_gemini(ticker):
 
 def get_ai_recommendation(visa_data):
     prompt = f"""
-    You are an analyst for immigrants hedging visa uncertainties. Analyze this data to optimize investments:
+    You are an analyst for immigrants hedging visa uncertainties. Provide an executive summary at the beginning of your response, followed by a detailed analysis. Analyze this data to optimize investments:
     - Current Visa: {visa_data['current_visa']}
     - Expiration Date: {visa_data['expiration_date']}
     - Pending Applications: {visa_data['pending_applications']}
@@ -82,7 +82,7 @@ def get_ai_recommendation(visa_data):
     - Investable Cash: ${visa_data['investable_cash']}
     - Monthly Contributions: ${visa_data['monthly_contributions']}
     - Current Date: {datetime.now().strftime('%Y-%m-%d')}
-    Suggest a creative portfolio with allocation percentages, risk multiplier, and projected FV using FV = PV * (1+r)^n + PMT * [((1+r)^n - 1)/r]. Use current market data for expected returns. Structure output with sections: 'Visa & Financial Context Analysis', 'Creative Portfolio Strategy', 'Projected Growth with Compounding', 'Concise Recommendation'.
+    Suggest a creative portfolio with allocation percentages, risk multiplier, and projected FV using FV = PV * (1+r)^n + PMT * [((1+r)^n - 1)/r]. Use current market data for expected returns. Structure output with sections: 'Executive Summary', 'Visa & Financial Context Analysis', 'Creative Portfolio Strategy', 'Projected Growth with Compounding', 'Concise Recommendation'.
     """
     model = genai.GenerativeModel('gemini-2.5-flash')
     response = model.generate_content(prompt)
@@ -226,5 +226,3 @@ def recommend_investment(visa_data):
     print(f"Open AI Projected Portfolio Value in {months:.1f} months: ${openai_fv:.2f}")
 
     return gemini_portfolio, openai_portfolio, gemini_fv, openai_fv
-
-# No direct call to get_visa_input() here; handled by app.py
